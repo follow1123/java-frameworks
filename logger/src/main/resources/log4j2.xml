@@ -4,20 +4,54 @@
                xsi:schemaLocation="
                    https://logging.apache.org/xml/ns
                    https://logging.apache.org/xml/ns/log4j-config-2.xsd">
+    <Properties>
+        <!-- 使用环境变量 -->
+        <Property name="log.dir" value="${env:USERPROFILE}/Desktop"/>
+    </Properties>
     <Appenders>
+        <!-- 输出到控制台 -->
         <Console name="CONSOLE">
-            <PatternLayout pattern="%-d{yyyy-MM-dd HH:mm:ss} [%t] %p %c %M - %m%n"/>
+            <PatternLayout pattern="%-d{yyyy-MM-dd HH:mm:ss} [%t] %-5p %c %M - %marker: %m%n"/>
         </Console>
-        <File name="DEBUG_LOG" fileName="logs/debug.log">
+        <!-- 输出到文件 -->
+        <File name="DEBUG_LOG" fileName="${log.dir}/logs/debug.log">
             <PatternLayout pattern="%d [%t] %p %c - %m%n"/>
         </File>
+
+        <!-- 输出到文件，滚动更新 -->
+        <RollingFile name="FILE"
+                     fileName="${log.dir}/logs/app.log"
+                     filePattern="${log.dir}/logs/app.%d{yyyy-MM-dd}.%i.log">
+            <!-- 日志输出格式 -->
+            <PatternLayout pattern="%-d{yyyy-MM-dd HH:mm:ss} [%t] %-5p %c %M - %m%n"/>
+            <!-- 滚动策略 -->
+            <Policies>
+                <!-- 启动项目时就触发滚动，如果文件超过1字节，直接滚动 -->
+                <OnStartupTriggeringPolicy/>
+                <!-- 根据文件大小进行滚动，默认10MB -->
+                <SizeBasedTriggeringPolicy/>
+
+                <!-- 根据时间滚动，在RollingFile标签上的filePattern配置指定的日志格式
+                    yyyy-MM-dd 每天更新
+                    yyyy-MM-dd-HH 每小时更新 -->
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+            <!-- 最多只存5份文件 -->
+            <DefaultRolloverStrategy max="5"/>
+        </RollingFile>
     </Appenders>
     <Loggers>
+        <!-- 默认日志级别 -->
         <Root level="INFO">
-            <AppenderRef ref="CONSOLE" level="WARN"/>
+            <AppenderRef ref="CONSOLE" level="ALL"/>
         </Root>
-        <Logger name="org.example" level="DEBUG">
+        <!-- 指定文件日志 -->
+        <Logger name="cn.y.java.log4j2.debug_package" level="DEBUG">
             <AppenderRef ref="DEBUG_LOG"/>
+        </Logger>
+        <!-- 指定滚动更新文件日志 -->
+        <Logger name="cn.y.java.log4j2.file_package" level="INFO">
+            <AppenderRef ref="FILE"/>
         </Logger>
     </Loggers>
 </Configuration>

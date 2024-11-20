@@ -3,4 +3,51 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
+
+    <!-- 配置servlet -->
+    <servlet>
+        <servlet-name>ConfWithXmlServlet</servlet-name>
+        <servlet-class>cn.y.java.servlet.ConfWithXmlServlet</servlet-class>
+    </servlet>
+    <!-- 指定路径 -->
+    <servlet-mapping>
+        <servlet-name>ConfWithXmlServlet</servlet-name>
+        <url-pattern>/xmlservlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>LoadOnStartup2Servlet</servlet-name>
+        <servlet-class>cn.y.java.servlet.lifecycle.LoadOnStartup2Servlet</servlet-class>
+        <!-- 配置启动时加载这个Servlet -->
+        <load-on-startup>60</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LoadOnStartup2Servlet</servlet-name>
+        <url-pattern>/loadonstartup2</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>XmlServletConfigServlet</servlet-name>
+        <servlet-class>cn.y.java.servlet.servlet_config.XmlServletConfigServlet</servlet-class>
+        <init-param>
+            <param-name>k1</param-name>
+            <param-value>v1</param-value>
+        </init-param>
+        <init-param>
+            <param-name>k2</param-name>
+            <param-value>v2</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>XmlServletConfigServlet</servlet-name>
+        <url-pattern>/xmlconfig</url-pattern>
+    </servlet-mapping>
+
+    <context-param>
+        <param-name>ctx-k2</param-name>
+        <param-value>v22</param-value>
+    </context-param>
+    <context-param>
+        <param-name>ctx-k3</param-name>
+        <param-value>v3</param-value>
+    </context-param>
 </web-app>

@@ -50,4 +50,17 @@
         <param-name>ctx-k3</param-name>
         <param-value>v3</param-value>
     </context-param>
+
+    <filter>
+        <filter-name>ConfWithXmlFilter</filter-name>
+        <filter-class>cn.y.java.filter.ConfWithXmlFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>ConfWithXmlFilter</filter-name>
+        <url-pattern>/filtertest/*</url-pattern>
+    </filter-mapping>
+
+    <listener>
+        <listener-class>cn.y.java.listener.SessionTestListener</listener-class>
+    </listener>
 </web-app>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Json编码解码Endpoint</title>
+  <style>
+    #console{
+      width: 300px;
+      height: 300px;
+      border: 1px solid black;
+      overflow: auto;
+    }
+  </style>
+  <script type="text/javascript">
+    let ws = null;
+
+    function printMsg(msg){
+      let cs = document.getElementById("console")
+      var p = document.createElement('p');
+      p.style.wordWrap = 'break-word';
+      p.appendChild(document.createTextNode(msg));
+      cs.appendChild(p);
+      while (cs.childNodes.length > 25) {
+        cs.removeChild(cs.firstChild);
+      }
+      cs.scrollTop = cs.scrollHeight;
+    }
+
+    function startWs(){
+      if(ws != null){
+        alert("WebSocket服务已经启动");
+        return;
+      }
+      ws = new WebSocket("ws://localhost:8080/ws/ed/echo");
+      ws.onopen = function() {
+        printMsg("System: WebSocket 连接已打开")
+      }
+      ws.onmessage = function (event) {
+        printMsg('Received: ' + event.data);
+      };
+      ws.onclose = function (event) {
+        printMsg('Info: WebSocket connection closed, Code: ' + event.code + (event.reason == "" ? "" : ", Reason: " + event.reason));
+      };
+    }
+
+    function stopWs(){
+      if(ws == null){
+        alert("WebSocket服务还没启动");
+        return;
+      }
+      ws.close();
+      ws = null;
+    }
+
+    function sendMsg(){
+      if(ws == null){
+        alert("WebSocket服务还没启动");
+        return;
+      }
+      let name = document.getElementById("name").value;
+      let age = document.getElementById("age").value;
+      let person = JSON.stringify({name, age})
+      printMsg('Sent: ' + person);
+      ws.send(person);
+    }
+
+
+  </script>
+</head>
+<body>
+  <div>
+    <button onclick="startWs();">启动 WebSocket</button>
+    <button onclick="stopWs();">停止 WebSocket</button>
+    <div id="console">
+    </div>
+    <div class="form">
+      <label for="name">姓名</label>
+      <input id="name" type="text" /> <br />
+      <label for="age">年龄</label>
+      <input id="age" type="number" />
+      <button onclick="sendMsg();" id="send">发送</button>
+    </div>
+  </div>
+</body>
+</html>

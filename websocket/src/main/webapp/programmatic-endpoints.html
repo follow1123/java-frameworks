@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>编程式Endpoint</title>
+  <style>
+    #console{
+      width: 300px;
+      height: 300px;
+      border: 1px solid black;
+      overflow: auto;
+    }
+  </style>
+  <script type="text/javascript">
+    let ws = null;
+
+    function printMsg(msg){
+      let cs = document.getElementById("console")
+      var p = document.createElement('p');
+      p.style.wordWrap = 'break-word';
+      p.appendChild(document.createTextNode(msg));
+      cs.appendChild(p);
+      while (cs.childNodes.length > 25) {
+        cs.removeChild(cs.firstChild);
+      }
+      cs.scrollTop = cs.scrollHeight;
+    }
+
+    function startWs(){
+      if(ws != null){
+        alert("WebSocket服务已经启动");
+        return;
+      }
+      ws = new WebSocket("ws://localhost:8080/ws/echo");
+      ws.onopen = function() {
+        printMsg("System: WebSocket 连接已打开")
+      }
+      ws.onmessage = function (event) {
+        printMsg('Received: ' + event.data);
+      };
+      ws.onclose = function (event) {
+        printMsg('Info: WebSocket connection closed, Code: ' + event.code + (event.reason == "" ? "" : ", Reason: " + event.reason));
+      };
+    }
+
+    function stopWs(){
+      if(ws == null){
+        alert("WebSocket服务还没启动");
+        return;
+      }
+      ws.close();
+      ws = null;
+    }
+
+    function sendMsg(){
+      if(ws == null){
+        alert("WebSocket服务还没启动");
+        return;
+      }
+      var message = document.getElementById('ipt').value;
+      printMsg('Sent: ' + message);
+      ws.send(message);
+    }
+
+
+  </script>
+</head>
+<body>
+  <div>
+    <button onclick="startWs();">启动 WebSocket</button>
+    <button onclick="stopWs();">停止 WebSocket</button>
+    <div id="console">
+    </div>
+    <input id="ipt" type="text" />
+    <button onclick="sendMsg();" id="send">发送</button>
+  </div>
+</body>
+</html>
